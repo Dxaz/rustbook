@@ -1,4 +1,7 @@
+use num_bigint::BigUint;
+use num_traits::{One, Zero};
 use std::io;
+use std::mem::replace;
 
 fn main() {
     loop {
@@ -19,10 +22,6 @@ fn main() {
             Err(_) => 0,
         };
 
-        let mut vector: Vec<usize> = Vec::new();
-        vector.push(0);
-        vector.push(1);
-        let vector: Vec<usize> = vector;
         //if input <= 93 {
         //    let vect = fibbonaci(input, vector);
         //    let input = input as usize;
@@ -30,23 +29,24 @@ fn main() {
         //} else {
         //    println!("Value too high")
         //}
-        let vect = fibbonaci(input, vector);
-        println!("{}", vect)
+        let answer = fibbonaci(input);
+        println!("{}", answer)
     }
 }
 
-fn fibbonaci(input: usize, mut vector: Vec<usize>) -> usize {
-    for x in 2..=input {
-        let x_1 = vector[x - 1];
-        let x_2 = vector[x - 2];
-        if x_1.checked_add(x_2) != None {
-            let fib = x_1 + x_2;
-            vector.push(fib);
-        } else {
-            println!("Value is too high! Max is: {}", x - 1);
-            vector.push(0);
-            return vector[x];
-        }
+fn fibbonaci(input: usize) -> BigUint {
+    // let mut x_0: BigUint = BigUint::from(0u32);
+    let mut x_0: BigUint = Zero::zero();
+
+    // let mut x_1: BigUint = BigUint::from(1u32);
+    let mut x_1: BigUint = One::one();
+
+    for _ in 0..input {
+        let x_2 = x_0 + &x_1;
+
+        // pub fn replace<T>(dest: &mut T, src: T)
+        // Moves src into the referenced dest, returning the previous dest value.
+        x_0 = replace(&mut x_1, x_2);
     }
-    return vector[input];
+    return x_0;
 }
